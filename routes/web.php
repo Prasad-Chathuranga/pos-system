@@ -40,6 +40,7 @@ Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','preventBack']]
 Route::group(['prefix'=>'user', 'middleware'=>['isUser','auth','preventBack']], function(){
     Route::get('dashboard', [UserController::class, 'index'])->name('user.dashboard');
     Route::get('profile', [UserController::class, 'profile'])->name('user.profile');
+    Route::get('search', [ItemController::class, 'search'])->name('user.search');
     Route::get('add-item', [ItemController::class, 'index'])->name('user.add-item');
     Route::get('add-item-category', [ItemCategoryController::class, 'index'])->name('user.add-item-category');
     Route::post('save-item-category', [ItemCategoryController::class, 'save']);
