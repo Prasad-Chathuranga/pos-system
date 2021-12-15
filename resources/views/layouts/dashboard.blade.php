@@ -261,6 +261,10 @@ body {
   animation: swing ease-in-out 0.5s 1 alternate;
 }
 
+.sidebar-dropdown:hover {
+  cursor: pointer;
+}
+
 .sidebar-wrapper .sidebar-menu .sidebar-dropdown > a:after {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
@@ -789,7 +793,7 @@ body {
                   <li class="header-menu">
                     <span>General</span>
                   </li>
-                  <li class="sidebar-dropdown">
+                  {{-- <li class="sidebar-dropdown">
                     <a href="#">
                       <i class="fa fa-tachometer-alt"></i>
                       <span>Dashboard</span>
@@ -810,11 +814,11 @@ body {
                         </li>
                       </ul>
                     </div>
-                  </li>
+                  </li> --}}
                   <li class="sidebar-dropdown">
-                    <a href="#">
+                    <a>
                       <i class="fa fa-shopping-cart"></i>
-                      <span>Item</span>
+                      <span>Stock Management</span>
                       {{-- <span class="badge badge-pill badge-danger">3</span> --}}
                     </a>
                     <div class="sidebar-submenu">
@@ -829,12 +833,6 @@ body {
         
                           </a>
                         </li>
-                        <li>
-                          <a href="#">View Items</a>
-                        </li>
-                        {{-- <li>
-                          <a href="#">Credit cart</a>
-                        </li> --}}
                       </ul>
                     </div>
                   </li>
@@ -846,7 +844,7 @@ body {
                     <div class="sidebar-submenu">
                       <ul>
                         <li>
-                          <a href="#">General</a>
+                          <a href={{ route('user.invoice') }}>Invoice</a>
                         </li>
                         <li>
                           <a href="#">Panels</a>
