@@ -50,6 +50,7 @@ Route::group(['prefix'=>'user', 'middleware'=>['isUser','auth','preventBack']], 
     Route::delete('delete-item-category/{id}', [ItemCategoryController::class, 'delete'])->name('category.delete');
     Route::delete('delete-item/{id}', [ItemController::class, 'delete'])->name('item.delete');
     Route::get('get-category-details', [ItemController::class, 'categoryDetials'])->name('user.category-details');
+    Route::get('get-item-details', [InvoiceController::class, 'itemDetails'])->name('user.item-details');
     Route::get('add-item', [ItemController::class, 'index'])->name('user.add-item');
     Route::get('add-item-category', [ItemCategoryController::class, 'index'])->name('user.add-item-category');
     Route::post('save-item-category', [ItemCategoryController::class, 'save']);

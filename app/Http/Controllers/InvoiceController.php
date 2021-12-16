@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\items;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
@@ -27,7 +28,7 @@ class InvoiceController extends Controller
               foreach ($data as $row){
                 
                   $output .= '<tr style="background: #f0ebdf; cursor: pointer" >';
-                  $output .= '<td><span class="float-left">'.$row->item_no.'</span></td>';
+                  $output .= '<td id='.$row->id.'><span class="float-left">'.$row->item_no.'</span></td>';
                   $output .= '</tr>';
   
               }
@@ -39,5 +40,14 @@ class InvoiceController extends Controller
           return $output;
         }
       }
+
+      public function itemDetails(Request $request){
+        if($request->ajax()){
+       
+          $data = DB::table('items')->where('item_no',$request->data)->first();
+          return $data;
+            
+        }
+    }
 
 }
