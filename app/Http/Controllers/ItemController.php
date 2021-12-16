@@ -55,7 +55,7 @@ class ItemController extends Controller
               foreach ($data as $row){
                 
                   $output .= '<tr style="background: #f0ebdf; cursor: pointer" >';
-                  $output .= '<td><span class="float-left">'.$row->category_description.'</span></td>';
+                  $output .= '<td id='.$row->id.'><span class="float-left">'.$row->category_description.'</span></td>';
                   $output .= '</tr>';
   
               }
