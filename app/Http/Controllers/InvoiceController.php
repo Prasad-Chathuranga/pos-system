@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+use Barryvdh\DomPDF\Facade as PDF;
 
 use App\Models\items;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 
 class InvoiceController extends Controller
 {
@@ -54,6 +56,30 @@ class InvoiceController extends Controller
           return $data;
             
         }
+    }
+
+    public function printInvoice(Request $request){
+    
+
+     $array = json_decode($request->data, true);
+      $array_items = [];
+      foreach ($array as $memu) {
+       array_push($array_items, $memu);
+      }
+ 
+      $data = [
+        'items' => $array_items,
+        'sub_total' => $request->sub_total,
+        'total' => $request->total,
+        'discount' => $request->discount
+      ];
+
+// dd($data);
+    
+      $pdf = PDF::loadView('inv-template', $data)->setOptions(['defaultFont' => 'sans-serif']);;
+      return $pdf->stream('INVOICE - '. date('Y_m_d-H-i-s') .'.pdf',  array("Attachment" => false));
+     
+
     }
 
 }

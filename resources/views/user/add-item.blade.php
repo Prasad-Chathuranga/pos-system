@@ -184,8 +184,10 @@
                                     <label>Country <span class="text-danger">*</span></label>
                                     <select name="country" class="form-control form-control-sm">
                                         <option selected disabled>Select a Country....</option>
-                                        <option value="Active">Active</option>
-                                        <option value="InActive">InActive</option>
+                                        @foreach ($countries as $country)
+                                            <option value={{ $country->country_code }}>{{ $country->country_name }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -443,20 +445,32 @@
 
             () {
 
-                var id = $(this).attr('id');
+                swal({
+                    title: "Are you sure?",
+                    text: "Once deleted, you will not be able to recover this!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        var id = $(this).attr('id');
 
-                $.ajax({
-                    url: "delete-item/" + id,
-                    type: 'DELETE',
-                    data: {
-                        'data': id,
-                        "_token": "{{ csrf_token() }}"
-                    },
-                    success: function(data) {
-                        window.location = data.url;
+                        $.ajax({
+                            url: "delete-item/" + id,
+                            type: 'DELETE',
+                            data: {
+                                'data': id,
+                                "_token": "{{ csrf_token() }}"
+                            },
+                            success: function(data) {
+                                window.location = data.url;
 
+                            }
+                        })
                     }
                 })
+
+
             });
 
         $(document).on('click', '#searchTableEdit td', function
