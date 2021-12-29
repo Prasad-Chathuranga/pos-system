@@ -35,7 +35,7 @@
                                         <td>{{ $category->category_status }}</td>
                                         <td><a id=" {{ $category->id }} " style="cursor: pointer" class='mr-3 edit_category_button'><span data-toggle='modal'
                                             data-target='#edit_category' class='fas fa-edit text-info'></span></a>
-                                            <a id=" {{ $category->id }} " style="cursor: pointer" onclick="document.getElementById('delete-item-category').submit();"><span class='fas fa-trash text-danger'></span></a></td>
+                                            <a id=" {{ $category->id }} " style="cursor: pointer" class="delete_category_button"><span class='fas fa-trash text-danger'></span></a></td>
                                             <form id="delete-item-category" action="{{ route('category.delete', $category->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
@@ -222,16 +222,30 @@
         })
 
         $(document).on('click', '.delete_category_button', function(){
-            var id = $(this).attr('id');
-       
-        $.ajax({
-                url: "delete-item-category/"+id,
-                type: 'DELETE',
-                data: {'id': id, "_token": "{{ csrf_token() }}",},
-                success:function(data){
-                  
+
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $('#delete-item-category').submit();
                 }
             })
+
+
+        //     var id = $(this).attr('id');
+       
+        // $.ajax({
+        //         url: "delete-item-category/"+id,
+        //         type: 'DELETE',
+        //         data: {'id': id, "_token": "{{ csrf_token() }}",},
+        //         success:function(data){
+                  
+        //         }
+        //     })
         })
 
 

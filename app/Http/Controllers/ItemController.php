@@ -11,7 +11,8 @@ class ItemController extends Controller
     //
     public function index(){
         $items = DB::table('items')->get();
-        return view('user.add-item', compact('items'));
+        $countries = DB::table('countries')->get();
+        return view('user.add-item', compact('items','countries'));
     }
 
     public function search(Request $request){
