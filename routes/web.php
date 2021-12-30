@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ItemCategoryController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
@@ -39,8 +41,30 @@ Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin','auth','preventBack']]
 
 Route::group(['prefix'=>'user', 'middleware'=>['isUser','auth','preventBack']], function(){
     Route::get('dashboard', [UserController::class, 'index'])->name('user.dashboard');
+    Route::get('countries', [CountryController::class, 'index'])->name('user.countries');
+    Route::get('invoice', [InvoiceController::class, 'index'])->name('user.invoice');
     Route::get('profile', [UserController::class, 'profile'])->name('user.profile');
+    Route::get('search', [ItemController::class, 'search'])->name('user.search');
+    Route::get('search-inv-item', [InvoiceController::class, 'search'])->name('invoice.search');
+    Route::get('search-edit', [ItemController::class, 'searchEdit'])->name('user.search-edit');
+    Route::get('get-item-category/{id}', [ItemCategoryController::class, 'edit']);
+    Route::get('get-country/{id}', [CountryController::class, 'edit']);
+    Route::get('get-item/{id}', [ItemController::class, 'edit']);
+    Route::delete('delete-item-category/{id}', [ItemCategoryController::class, 'delete'])->name('category.delete');
+    Route::delete('delete-item/{id}', [ItemController::class, 'delete'])->name('item.delete');
+    Route::delete('delete-country/{id}', [CountryController::class, 'delete'])->name('country.delete');
+    Route::get('get-category-details', [ItemController::class, 'categoryDetials'])->name('user.category-details');
+    Route::get('get-item-details', [InvoiceController::class, 'itemDetails'])->name('user.item-details');
     Route::get('add-item', [ItemController::class, 'index'])->name('user.add-item');
     Route::get('add-item-category', [ItemCategoryController::class, 'index'])->name('user.add-item-category');
+    Route::get('print-invoice-pdf', [InvoiceController::class, 'printInvoice'])->name('user.print-pdf');
+    // Route::get('print-invoice-pdf', [InvoiceController::class, 'printInvoice'])->name('user.print-pdf');
+    Route::post('print-invoice', [InvoiceController::class, 'printInvoice']);
     Route::post('save-item-category', [ItemCategoryController::class, 'save']);
+    Route::post('save-country', [CountryController::class, 'save']);
+    Route::post('save-item', [ItemController::class, 'save']);
+    Route::post('update-item-category', [ItemCategoryController::class, 'update']);
+    Route::post('update-item', [ItemController::class, 'update']);
+    Route::post('update-country', [CountryController::class, 'update']);
+    
 });

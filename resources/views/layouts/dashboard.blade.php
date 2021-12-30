@@ -9,7 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" />
 
-
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   
@@ -259,6 +259,10 @@ body {
 .sidebar-wrapper .sidebar-menu ul li a:hover > i::before {
   display: inline-block;
   animation: swing ease-in-out 0.5s 1 alternate;
+}
+
+.sidebar-dropdown:hover {
+  cursor: pointer;
 }
 
 .sidebar-wrapper .sidebar-menu .sidebar-dropdown > a:after {
@@ -789,7 +793,7 @@ body {
                   <li class="header-menu">
                     <span>General</span>
                   </li>
-                  <li class="sidebar-dropdown">
+                  {{-- <li class="sidebar-dropdown">
                     <a href="#">
                       <i class="fa fa-tachometer-alt"></i>
                       <span>Dashboard</span>
@@ -810,11 +814,11 @@ body {
                         </li>
                       </ul>
                     </div>
-                  </li>
+                  </li> --}}
                   <li class="sidebar-dropdown">
-                    <a href="#">
+                    <a>
                       <i class="fa fa-shopping-cart"></i>
-                      <span>Item</span>
+                      <span>Stock Management</span>
                       {{-- <span class="badge badge-pill badge-danger">3</span> --}}
                     </a>
                     <div class="sidebar-submenu">
@@ -829,12 +833,6 @@ body {
         
                           </a>
                         </li>
-                        <li>
-                          <a href="#">View Items</a>
-                        </li>
-                        {{-- <li>
-                          <a href="#">Credit cart</a>
-                        </li> --}}
                       </ul>
                     </div>
                   </li>
@@ -846,10 +844,10 @@ body {
                     <div class="sidebar-submenu">
                       <ul>
                         <li>
-                          <a href="#">General</a>
+                          <a href={{ route('user.invoice') }}>Invoice</a>
                         </li>
                         <li>
-                          <a href="#">Panels</a>
+                          <a href={{ route('user.countries') }}>Countries</a>
                         </li>
                         <li>
                           <a href="#">Tables</a>
