@@ -12,10 +12,13 @@
                 </strong>
             </div>
             <div class="card-body">
+             
                 <div class="row">
                     <div class="col-md-12">
+                       
                         <button class="btn btn-xs text-light mb-3" style="background-color: #1e2229" data-toggle="modal"
                             data-target=".bd-example-modal-lg" data-backdrop="static">Add New Category</button>
+                        
                         <table id="example" class="display table" style="width:100%">
                             <thead>
                                 <tr>
@@ -33,13 +36,17 @@
                                         <td>{{ $category->category_code }}</td>
                                         <td>{{ $category->category_description }}</td>
                                         <td>{{ $category->category_status }}</td>
+                                        @can('update', $category)
                                         <td><a id=" {{ $category->id }} " style="cursor: pointer" class='mr-3 edit_category_button'><span data-toggle='modal'
                                             data-target='#edit_category' class='fas fa-edit text-info'></span></a>
+                                        @endcan
+                                           @if (Auth::user()->can('delete', $category))
                                             <a id=" {{ $category->id }} " style="cursor: pointer" class="delete_category_button"><span class='fas fa-trash text-danger'></span></a></td>
                                             <form id="delete-item-category" action="{{ route('category.delete', $category->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                             </form>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -63,7 +70,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    @if (count($errors) > 0)
+                    {{-- @if (count($errors) > 0)
                         <script>
                             $('#category').modal('show');
                         </script>
@@ -77,7 +84,8 @@
                                 @endforeach
                             </ul>
                         </div>
-                    @endif
+                    @endif --}}
+
                     <form method="POST" id="category-form" action="save-item-category">
                         @csrf
                         <div class="row">
@@ -114,11 +122,13 @@
                                 </div>
                             </div>
                         </div>
+                        @can('create', \App\Models\ItemCategory::class)
                         <div class="form-group">
                             <button type="button" onclick="document.getElementById('category-form').submit();"
                                 class="btn btn-xs text-light" style="background-color: #1e2229">Save Item
                                 Category</button>
                         </div>
+                        @endcan
                     </form>
                 </div>
             </div>
@@ -137,7 +147,7 @@
                  </button>
              </div>
              <div class="modal-body">
-                 @if (count($errors) > 0)
+                 {{-- @if (count($errors) > 0)
                      <script>
                          $('#edit_category').modal('show');
                      </script>
@@ -151,7 +161,7 @@
                              @endforeach
                          </ul>
                      </div>
-                 @endif
+                 @endif --}}
                  <form method="POST" id="edit-category-form" action="update-item-category">
                      @csrf
                      <div class="row">

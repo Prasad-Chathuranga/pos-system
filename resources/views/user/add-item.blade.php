@@ -27,10 +27,12 @@
                                     <th>Country</th>
                                     <th>Sale Price</th>
                                     <th>Reorder Level</th>
-                                    <th>Action</th>
+                                    <th></th>
+                                    <th></th>
+                                   
                                 </tr>
                             </thead>
-
+                           
 
 
                             <tr>
@@ -43,7 +45,9 @@
                                     <th>Country</th>
                                     <th>Sale Price</th>
                                     <th>Reorder Level</th>
-                                    <th>Action</th>
+                                    <th></th>
+                                    <th></th>
+                                 
                             </tr>
                             </tfoot>
 
@@ -463,7 +467,16 @@
                                 "_token": "{{ csrf_token() }}"
                             },
                             success: function(data) {
-                                window.location = data.url;
+ 
+                                if(data.url){
+                                     window.location = data.url;
+                                }else if(data.message){
+                                    swal({
+                    title: "You cant perform this",
+                    text: "Once deleted, you will not be able to recover this!",
+                    icon: "warning"
+                })
+                                }
 
                             }
                         })
@@ -535,18 +548,16 @@
     </script>
 
     <script>
+
+        
         $(document).ready(function() {
             $("#country_list").hide();
             $('#example').DataTable({
                 'processing': true,
                 'serverSide': true,
                 'serverMethod': 'post',
-                responsive: true,
-                //   columnDefs: [
-                //         { responsivePriority: 1, targets: 0 },
-                //         { responsivePriority: 10001, targets: 4 },
-                //         { responsivePriority: 2, targets: -2 }
-                //     ],
+                'responsive': true,
+              
 
                 'ajax': {
                     'url': 'ajax_items.php'
@@ -576,7 +587,10 @@
                         data: 'reorder_level'
                     },
                     {
-                        data: 'action'
+                        data: 'edit'
+                    },
+                    {
+                        data: 'delete'
                     }
 
                 ]
