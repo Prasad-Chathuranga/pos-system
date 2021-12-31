@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Customer;
 use Barryvdh\DomPDF\Facade as PDF;
 
 use App\Models\items;
@@ -49,6 +51,39 @@ class InvoiceController extends Controller
         }
       }
 
+      public function customerSearch(Request $request){
+        if($request->ajax()){
+
+            $data = Customer::
+            where('customer_name','LIKE',$request->result . '%')
+            ->orWhere('name_for_code','LIKE',$request->result . '%')
+            ->orWhere('mobile_no','LIKE',$request->result . '%')
+            ->get();
+
+            $output = '';
+  
+            if (count($data)>0) {
+                
+              $output = '<div class="col-md-12" style="overflow-y: scroll; height: 150px">
+              <table id="customerTable" class="table table-borderless">
+                <tbody>';
+  
+              foreach ($data as $row){
+                
+                  $output .= '<tr style="background: #f0ebdf; cursor: pointer" >';
+                  $output .= '<td class='.$row->id.' id='.$row->customer_name.'><b><span class="float-left">'.$row->name_for_code.'</span><span class="ml-4">'.$row->customer_name.'</span><span class="float-right">'.$row->type.'</span></b></td>';
+                  $output .= '</tr>';
+  
+              }
+  
+              $output .= '</tbody> </table> </div>';
+              
+          }
+         
+          return $output;
+        }
+      }
+
       public function itemDetails(Request $request){
         if($request->ajax()){
        
@@ -57,6 +92,15 @@ class InvoiceController extends Controller
             
         }
     }
+
+    public function customerDetails(Request $request){
+      if($request->ajax()){
+     
+        $data = DB::table('customers')->where('id',$request->data)->first();
+        return $data;
+          
+      }
+  }
 
     public function printInvoice(Request $request){
     

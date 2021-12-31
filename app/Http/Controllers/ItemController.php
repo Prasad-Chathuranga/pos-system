@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ItemCategory;
 use App\Models\items;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
@@ -13,6 +14,11 @@ class ItemController extends Controller
         $items = DB::table('items')->get();
         $countries = DB::table('countries')->get();
         return view('user.add-item', compact('items','countries'));
+    }
+
+    public function getAllItems(){
+        $items = DB::table('items')->get();
+        return $items;
     }
 
     public function search(Request $request){
@@ -163,13 +169,18 @@ class ItemController extends Controller
     }
 
     public function delete($id){
-        $item = items::where('id',$id)->delete();
+        if(Auth::user()->role == 1){
+            $item = items::where('id',$id)->delete();
         if($item != ""){
             
             return response()->json(['url'=>url('user/add-item')]);
             
 
         }
+        }else{
+            return response()->json(['message'=>'You can not perform this action !']);
+        }
+        
     }
 
 

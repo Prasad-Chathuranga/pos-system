@@ -32,17 +32,25 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label>Search for a Custopmer....</label>
+                            <label>Search for a Customer....</label>
                             <input class="form-control form-control-sm" id="customer_search" name="customer" type="text"
                                 placeholder="By Customer Name or Code...">
                         </div>
                         <div class="mb-2" id="customer_list"></div>
-                        <div class="form-group">
+                        <div style="display: none" class="customer-details mt-4">
+                        <label><span class="text-danger"><b>Customer Name </b></span> : <b><span id="customer_name"></span></b></label><br>
+                        <label><span class="text-danger"><b>Customer Type </b></span> : <b><span id="type"></span></b></label><br>
+                        <label><span class="text-danger"><b>Credit Balance </b></span> : <b><span id="credit_balance"></span></b></label><br>
+                        </div>
+                        <hr class="mt-4">
+                        <div class="form-group mt-2">
                             <label>Search for an Item....</label>
                             <input class="form-control form-control-sm" id="item_search" name="category" type="text"
                                 placeholder="By Category Name or Code...">
                         </div>
                         <div class="mb-2" id="country_list"></div>
+
+
 
                         <div class="table_added_items">
                             <table id="myTable" class="table table-borderless">
@@ -271,10 +279,6 @@
         </div>
     </div>
 
-
-
-
-
     <script>
         var totalInvoiceAmount = 0;
         var arrayOfItems = []
@@ -313,12 +317,6 @@
 
             $("#invoice_view_time").text(new Date().toLocaleTimeString());
             $("#invoice_view_date").text(new Date().toLocaleDateString());
-
-            // data_print_invoice
-
-           
-            
-            
 
             $("#data_print_invoice").val(JSON.stringify(arrayOfItems));
             $("#sub_total_print_invoice").val(totalInvoiceAmount);
@@ -391,6 +389,75 @@
             }
 
         });
+
+        $("#customer_search").keyup(function() {
+
+var result = $(this).val();
+
+if (result != "") {
+    $.ajax({
+        url: "{{ route('user.search-customer-name') }}",
+        type: 'GET',
+        data: {
+            'result': result
+        },
+        success: function(data) {
+
+            if (data != "") {
+                $("#customer_list").html(data);
+                $("#customer_list").show();
+            }
+
+
+        }
+    })
+} else {
+    $("#customer_list").hide();
+}
+
+});
+
+$(document).on('click', '#customerTable td', function
+
+            (e) {
+
+                var value = ($(this).attr('class'));
+
+                $.ajax({
+                url: "{{ route('customer-details') }}",
+                type: 'GET',
+                data: {
+                    'data': value
+                },
+                success: function(data) {
+                    $("#customer_list").hide();
+                    $("#customer_search").val(data.customer_name);
+                    $(".customer-details").show();
+                    $("#customer_name").text(data.customer_name);
+                    $("#type").text(data.type);
+                    $("#credit_balance").text(data.credit_balance);
+                    // $('.table_added_items').show();
+
+
+                    // $('#myTable tbody')
+                    //     .append('<tr><td class="class_item_no">' + data.item_no +
+                    //         '</td><td class="class_item_code">' + data.item_code +
+                    //         '</td><td class="class_item_description">' +
+                    //         data.description +
+                    //         '</td><td class="class_price"><input type="number" id="price" class="form-control form-control-sm" value=' +
+                    //         data.sale_price +
+                    //         ' /></td><td class="class_quantity"><input type="number" id="quantity" class="form-control form-control-sm" placeholder="Enter Quantity" /></td><td><a style="cursor: pointer" class="deleteRow" ><span class="fas fa-trash text-danger"></span></a></td></tr>'
+                    //     );
+                    // arrayOfItemNames.push(data.id);
+
+
+                }
+            })
+
+                
+            });
+
+
 
 
         $(document).on('click', '#searchTable td', function

@@ -1,8 +1,5 @@
 <?php
 ## Database configuration
-
-use Illuminate\Support\Facades\Auth;
-
 $sname= "localhost";
 $unmae= "root";
 $password = "";
@@ -11,14 +8,7 @@ $db_name = "pos_system";
 
 $conn = mysqli_connect($sname, $unmae, $password, $db_name);
 
-## Read value
-$draw = $_POST['draw'];
-$row = $_POST['start'];
-$rowperpage = $_POST['length']; // Rows display per page
-$columnIndex = $_POST['order'][0]['column']; // Column index
-$columnName = $_POST['columns'][$columnIndex]['data']; // Column name
-$columnSortOrder = $_POST['order'][0]['dir']; // asc or desc
-$searchValue = mysqli_real_escape_string($conn,$_POST['search']['value']); // Search value
+// $searchValue = 
 
 ## Search 
 $searchQuery = " ";
@@ -46,14 +36,11 @@ while ($row = mysqli_fetch_assoc($empRecords)) {
 
    // Update Button
    // $updateButton = "<a class='btn btn-success'  href='editCustomer.php?id=".$row['cid']."'   method='POST'><span class='fas fa-edit text-light'></span></a>"; 
-   $updateButton = "<a class='mr-3 edit_item_button' style='cursor: pointer' id='".$row['id']."' data-toggle='modal'
+   $updateButton = "<a class='mr-3' data-id='".$row['id']."' data-toggle='modal'
    data-target='#edit_item' ><span class='fas fa-edit text-info'></span></a>";
 
-   
    // Delete Button
-   $deleteButton = "<a  id='".$row['id']."' class='delete_item_button' style='cursor: pointer'><span class='fas fa-trash text-danger'></span></a>";
-
-   
+   $deleteButton = "<a onclick='javascript:confirmationDelete($(this));return false;'  method='POST'><span class='fas fa-trash text-danger'></span></a>";
 
    $action = $updateButton." ".$deleteButton;
 
@@ -66,8 +53,7 @@ while ($row = mysqli_fetch_assoc($empRecords)) {
       "sale_price"=>$row['sale_price'],
       "reorder_level"=>$row['reorder_level'],
       "country"=>$row['country'],
-      "edit" => $updateButton,
-      "delete" => $deleteButton
+      "action" => $action
    );
   
 }
