@@ -1,5 +1,8 @@
 <?php
 ## Database configuration
+
+use Illuminate\Contracts\Session\Session;
+
 $sname= "localhost";
 $unmae= "root";
 $password = "";
@@ -43,6 +46,7 @@ while ($row = mysqli_fetch_assoc($empRecords)) {
 
    // Update Button
    // $updateButton = "<a class='btn btn-success'  href='editCustomer.php?id=".$row['cid']."'   method='POST'><span class='fas fa-edit text-light'></span></a>"; 
+   
    $updateButton = "<a class='mr-3 edit_item_button' style='cursor: pointer' id='".$row['id']."' data-toggle='modal'
    data-target='#edit_item' ><span class='fas fa-edit text-info'></span></a>";
 
@@ -51,7 +55,7 @@ while ($row = mysqli_fetch_assoc($empRecords)) {
 
    
 
-   $action = $updateButton." ".$deleteButton;
+   // $action = $updateButton." ".$deleteButton;
 
    $data[] = array( 
       "id"=>$row['id'],
@@ -62,7 +66,8 @@ while ($row = mysqli_fetch_assoc($empRecords)) {
       "sale_price"=>$row['sale_price'],
       "reorder_level"=>$row['reorder_level'],
       "country"=>$row['country'],
-      "action" => $action
+      "edit" => $updateButton,
+      "delete" => $deleteButton
    );
   
 }

@@ -42,13 +42,13 @@
                                         <td><a id=" {{ $category->id }} " style="cursor: pointer" class='mr-3 edit_category_button'><span data-toggle='modal'
                                             data-target='#edit_category' class='fas fa-edit text-info'></span></a>
                                         @endif
-                                           @if (Auth::user()->can('delete', $category))
+                                           @can('delete', $category)
                                             <a id=" {{ $category->id }} " style="cursor: pointer" class="delete_category_button"><span class='fas fa-trash text-danger'></span></a></td>
                                             <form id="delete-item-category" action="{{ route('category.delete', $category->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                             </form>
-                                        @endif
+                                        @endcan
                                     </tr>
                                 @endforeach
                             </tbody>

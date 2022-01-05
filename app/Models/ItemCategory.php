@@ -9,5 +9,5 @@ class ItemCategory extends Model
 {
     // use HasFactory;
 
-    protected $fillable = [ 'category_description','category_status'];
+    protected $fillable = [ 'category_code','category_description','category_status'];
 }

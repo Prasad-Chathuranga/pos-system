@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Http\Requests\ItemRequest;
 use Illuminate\Http\Request;
 use App\Models\ItemCategory;
 use App\Models\items;
@@ -19,6 +21,15 @@ class ItemController extends Controller
     public function getAllItems(){
         $items = DB::table('items')->get();
         return $items;
+    }
+
+    public function priceChange(){
+        $items = items::paginate(100);
+    //    foreach ($items as $key => $value) {
+    //        dd($value);
+    //    }
+        return view('user.price-change', compact('items'));
+
     }
 
     public function search(Request $request){
@@ -99,38 +110,13 @@ class ItemController extends Controller
 
     }
 
-    public function save(Request $request){
+    public function save(ItemRequest $request){
 
         // dd($request);
 
-        $this->validate($request, [
-            "category_code" => 'required',
-            "description" => 'required',
-            "code" => 'required',
-            "item_no" => 'required',
-            "item_code" => 'required',
-            "item_description" => 'required',
-            "soh" => 'required',
-            "bin" => 'required',
-            "sale_price" => 'required',
-            "cost_price" => 'required',
-        ]);
-
+       
         $item = new items();
-        $item->item_no = $request->item_no;
-        $item->item_code = $request->item_code;
-        $item->description= $request->item_description;
-        $item->soh = $request->soh;
-        $item->bin = $request->bin;
-        $item->cost_price= $request->cost_price;
-        $item->status = $request->status;
-        $item->sale_price = $request->sale_price;
-        $item->reorder_level = $request->reorder_level;
-        $item->country= $request->country;
-        $item->category_code = $request->code;
-        $item->category = $request->description;
-
-        $query = $item->save();
+        $query = $item->save($request->validated());
 
         
 
@@ -169,6 +155,7 @@ class ItemController extends Controller
     }
 
     public function delete($id){
+        // dd($id);
         if(Auth::user()->role == 1){
             $item = items::where('id',$id)->delete();
         if($item != ""){
@@ -179,6 +166,7 @@ class ItemController extends Controller
         }
         }else{
             return response()->json(['message'=>'You can not perform this action !']);
+            // abort(401);
         }
         
     }

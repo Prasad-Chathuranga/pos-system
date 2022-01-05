@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Invoice;
+use App\Models\InvoiceItems;
 use Barryvdh\DomPDF\Facade as PDF;
 
 use App\Models\items;
@@ -124,6 +126,48 @@ class InvoiceController extends Controller
       return $pdf->stream('INVOICE - '. date('Y_m_d-H-i-s') .'.pdf',  array("Attachment" => false));
      
 
+    }
+
+
+    public function save(Request $request){
+      // dd($request);
+      if($request->ajax()){
+     $items = json_decode($request->data, true);
+   
+     $itemList = $items[0]['items'];
+
+     foreach ($itemList as $key => $item) {
+    
+        $invoiceItems = new InvoiceItems();
+        $invoiceItems->invoice_id = $items[0]['order_no'];
+        $invoiceItems->invoice_no = $items[0]['invoice_no'];
+        $invoiceItems->item_no = $item['item_no'];
+        $invoiceItems->item_code = $item['item_code'];
+        $invoiceItems->description = $item['item_description'];
+        $invoiceItems->price = $item['item_price'];
+        $invoiceItems->quantity = $item['item_quantity'];
+        $invoiceItems->before_quantity = $item['soh'];
+        $invoiceItems->total = $item['total_price'];
+
+        $invoiceItems->save();
+
+     }
+
+     $collection = collect(json_decode($request->data));
+
+    $addresses = $collection->map(function ($item, $key) {
+      return collect($item)->except(['items'])->toArray();
+  });
+
+       $query = Invoice::create($addresses[0]);
+
+       if($query){
+      
+        return $query;
+    }
+
+
+      }
     }
 
 }

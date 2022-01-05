@@ -24,6 +24,7 @@ class ItemCategoryRequest extends FormRequest
     public function rules()
     {
         return [
+            'category_id'=> 'required',
             'category_code' => 'required',
             'category_description' => 'required',
             'category_status' => 'required'

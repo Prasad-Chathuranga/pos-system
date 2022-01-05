@@ -38,9 +38,12 @@
                         </div>
                         <div class="mb-2" id="customer_list"></div>
                         <div style="display: none" class="customer-details mt-4">
-                        <label><span class="text-danger"><b>Customer Name </b></span> : <b><span id="customer_name"></span></b></label><br>
-                        <label><span class="text-danger"><b>Customer Type </b></span> : <b><span id="type"></span></b></label><br>
-                        <label><span class="text-danger"><b>Credit Balance </b></span> : <b><span id="credit_balance"></span></b></label><br>
+                            <label><span class="text-danger"><b>Customer Name </b></span> : <b><span
+                                        id="customer_name"></span></b></label><br>
+                            <label><span class="text-danger"><b>Customer Type </b></span> : <b><span
+                                        id="type"></span></b></label><br>
+                            <label><span class="text-danger"><b>Credit Balance </b></span> : <b><span
+                                        id="credit_balance"></span></b></label><br>
                         </div>
                         <hr class="mt-4">
                         <div class="form-group mt-2">
@@ -113,17 +116,18 @@
                                             placeholder="Precentage Amount">
                                     </div>
                                     <div class="row">
-                                    <button type="button" id="discount_button" class="btn btn-sm ml-3 text-light"
-                                        style="background-color: #1e2229">Calculate Discount</button>
-                                        <form action="print-invoice" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="data" id="data_print_invoice" />
-                                            <input type="hidden" name="sub_total" id="sub_total_print_invoice" />
-                                            <input type="hidden" name="discount" id="discount_print_invoice" />
-                                            <input type="hidden" name="total" id="total_print_invoice" />
-                                    <button type="submit" id="view_invoice" class="btn btn-success text-light ml-1 btn-sm">View
-                                        Invoice</button>
-                                        </form>
+                                        <button type="button" id="discount_button" class="btn btn-sm ml-3 text-light"
+                                            style="background-color: #1e2229">Calculate Discount</button>
+                                        {{-- <form action="print-invoice" method="POST"> --}}
+                                        @csrf
+                                        <input type="hidden" name="data" id="data_print_invoice" />
+                                        <input type="hidden" name="sub_total" id="sub_total_print_invoice" />
+                                        <input type="hidden" name="discount" id="discount_print_invoice" />
+                                        <input type="hidden" name="total" id="total_print_invoice" />
+                                        <button type="button" id="view_invoice"
+                                            class="btn btn-success text-light ml-1 btn-sm">Save
+                                            Invoice</button>
+                                        {{-- </form> --}}
                                     </div>
                                 </div>
 
@@ -280,12 +284,21 @@
     </div>
 
     <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
         var totalInvoiceAmount = 0;
         var arrayOfItems = []
         var arrayOfItemNames = []
         var discountType = "";
         var discounted_total = 0;
         var dis_amount = 0;
+        var customer_code = "";
+        var customer_mobile = "";
+        var soh = 0;
         $('.table_added_items').hide();
 
         $("#discount_button").on('click', function() {
@@ -325,6 +338,69 @@
             $("#total_print_invoice").val(discounted_total);
 
 
+            var data = {
+                "order_no": "ame",
+                "invoice_no": "ame",
+                "invoice_by": "ame",
+                "customer_code": customer_code,
+                "customer_name": $("#customer_name").text(),
+                "customer_mobile": customer_mobile,
+                "invoice_by": "ame",
+                "type": $("#type").text(),
+                "total_amount": totalInvoiceAmount,
+                "discount_amount": dis_amount,
+                "net_amount": discounted_total,
+                "_token": "{{ csrf_token() }}",
+                "items" : arrayOfItems
+            };
+            var arrayData = [];
+            arrayData.push(data)
+
+            console.log(data);
+
+            $.ajax({
+                url: "{{ route('invoice.save') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {
+                    data: JSON.stringify(arrayData)
+                },
+
+
+                success: function(data) {
+                    if (data) {
+                        swal({
+                            title: "Invoice Created Successfully !",
+                            icon: "success",
+                            buttons: true,
+                        })
+                    }
+                }
+            })
+
+            // $.ajax({
+            //     url: "{{ route('invoice.save') }}",
+            //     type: "POST",
+            //     data: {
+            //         "order_no": "ame",
+            //         "invoice_no" : "ame",
+            //         "invoice_by": "ame",
+            //         "customer_code": customer_code,
+            //         "customer_name":  $("#customer_name").text(),
+            //         "customer_mobile": customer_mobile,
+            //         "invoice_by": "ame",
+            //         "type":  $("#type").text,
+            //         "total_amount": totalInvoiceAmount,
+            //         "discount_amount": dis_amount,
+            //         "net_amount": discounted_total,
+            //         "_token": "{{ csrf_token() }}"
+            //     },
+            //     success: function(data) {
+            //         console.log(data);
+            //     }
+            // });
+
+
             arrayOfItems.forEach((element, index) => {
 
 
@@ -341,6 +417,9 @@
                         '</td></tr>'
                     );
             });
+
+
+
 
             arrayOfItems = []
 
@@ -392,69 +471,72 @@
 
         $("#customer_search").keyup(function() {
 
-var result = $(this).val();
+            var result = $(this).val();
 
-if (result != "") {
-    $.ajax({
-        url: "{{ route('user.search-customer-name') }}",
-        type: 'GET',
-        data: {
-            'result': result
-        },
-        success: function(data) {
+            if (result != "") {
+                $.ajax({
+                    url: "{{ route('user.search-customer-name') }}",
+                    type: 'GET',
+                    data: {
+                        'result': result
+                    },
+                    success: function(data) {
 
-            if (data != "") {
-                $("#customer_list").html(data);
-                $("#customer_list").show();
+                        if (data != "") {
+
+                            $("#customer_list").html(data);
+                            $("#customer_list").show();
+                        }
+
+
+                    }
+                })
+            } else {
+                $("#customer_list").hide();
             }
 
+        });
 
-        }
-    })
-} else {
-    $("#customer_list").hide();
-}
-
-});
-
-$(document).on('click', '#customerTable td', function
+        $(document).on('click', '#customerTable td', function
 
             (e) {
 
                 var value = ($(this).attr('class'));
 
                 $.ajax({
-                url: "{{ route('customer-details') }}",
-                type: 'GET',
-                data: {
-                    'data': value
-                },
-                success: function(data) {
-                    $("#customer_list").hide();
-                    $("#customer_search").val(data.customer_name);
-                    $(".customer-details").show();
-                    $("#customer_name").text(data.customer_name);
-                    $("#type").text(data.type);
-                    $("#credit_balance").text(data.credit_balance);
-                    // $('.table_added_items').show();
+                    url: "{{ route('customer-details') }}",
+                    type: 'GET',
+                    data: {
+                        'data': value
+                    },
+                    success: function(data) {
+                        customer_code = data.name_for_code;
+                        customer_mobile = data.mobile_no;
+                        $("#customer_list").hide();
+                        $("#customer_search").val(data.customer_name);
+                        $(".customer-details").show();
+                        $("#customer_name").text(data.customer_name);
+                        $("#type").text(data.type);
+                        $("#credit_balance").text(data.credit_balance);
+                        // $('.table_added_items').show();
 
 
-                    // $('#myTable tbody')
-                    //     .append('<tr><td class="class_item_no">' + data.item_no +
-                    //         '</td><td class="class_item_code">' + data.item_code +
-                    //         '</td><td class="class_item_description">' +
-                    //         data.description +
-                    //         '</td><td class="class_price"><input type="number" id="price" class="form-control form-control-sm" value=' +
-                    //         data.sale_price +
-                    //         ' /></td><td class="class_quantity"><input type="number" id="quantity" class="form-control form-control-sm" placeholder="Enter Quantity" /></td><td><a style="cursor: pointer" class="deleteRow" ><span class="fas fa-trash text-danger"></span></a></td></tr>'
-                    //     );
-                    // arrayOfItemNames.push(data.id);
+                        // $('#myTable tbody')
+                        //     .append('<tr><td class="class_item_no">' + data.item_no +
+                        //         '</td><td class="class_item_code">' + data.item_code +
+                        //         '</td><td class="class_item_description">' +
+                        //         data.description +
+                        //         '</td><td class="class_price"><input type="number" id="price" class="form-control form-control-sm" value=' +
+                        //         data.sale_price +
+                        //         ' /></td><td class="class_quantity"><input type="number" id="quantity" class="form-control form-control-sm" placeholder="Enter Quantity" /></td><td><a style="cursor: pointer" class="deleteRow" ><span class="fas fa-trash text-danger"></span></a></td></tr>'
+                        //     );
+                        // arrayOfItemNames.push(data.id);
 
 
-                }
-            })
+                    }
+                })
 
-                
+
             });
 
 
@@ -510,7 +592,7 @@ $(document).on('click', '#customerTable td', function
                     'data': value
                 },
                 success: function(data) {
-
+                    soh =  data.soh;
                     $('.table_added_items').show();
 
 
@@ -588,7 +670,8 @@ $(document).on('click', '#customerTable td', function
                             element.item_price +
                             ' /></td><td class="class_quantity"><input type="number" id="update_single_item_quantity" class="form-control form-control-sm" value=' +
                             element.item_quantity +
-                            ' /></td><td id="class_total_price" class="class_total_price">' + element
+                            ' /></td><td id="class_total_price" class="class_total_price">' +
+                            element
                             .total_price +
                             '</td><td><a id=' + index +
                             ' class="update_item_modal_icon" style="cursor: pointer"><span class="fas fa-wrench text-danger"></span></a></td></tr>'
@@ -607,8 +690,10 @@ $(document).on('click', '#customerTable td', function
                             '</td><td class="class_item_code">' + element.item_code +
                             '</td><td class="class_item_description">' +
                             element.item_description + '</td><td class="class_price">' +
-                            element.item_price + '</td><td class="class_quantity">' + element.item_quantity +
-                            '</td><td class="class_total_price text-danger"><b>' + element.total_price +
+                            element.item_price + '</td><td class="class_quantity">' + element
+                            .item_quantity +
+                            '</td><td class="class_total_price text-danger"><b>' + element
+                            .total_price +
                             '</b></td><td><a style="cursor: pointer" id="edit_item_modal_button" data-toggle="modal" data-target="#edit_item" ><span class="fas fa-edit text-info"></span></a>&nbsp;&nbsp;<a style="cursor: pointer" id=' +
                             index +
                             ' class="deleteRow" ><span class="fas fa-trash text-danger"></span></a></td></tr>'
@@ -635,7 +720,8 @@ $(document).on('click', '#customerTable td', function
                             '</td><td class="class_price"><input type="number" id="update_single_item_price" class="form-control form-control-sm" value=' +
                             element.item_price +
                             ' /></td><td class="class_quantity"><input type="number" id="update_single_item_quantity" class="form-control form-control-sm" value=' +
-                            element.item_quantity + ' /></td><td class="class_total_price">' + element
+                            element.item_quantity + ' /></td><td class="class_total_price">' +
+                            element
                             .total_price +
                             '</td><td><a id=' + index +
                             ' class="update_item_modal_icon" style="cursor: pointer"><span class="fas fa-wrench text-danger"></span></a></td></tr>'
@@ -667,7 +753,8 @@ $(document).on('click', '#customerTable td', function
                         'item_description': item_description,
                         'item_price': item_price,
                         'item_quantity': item_quantity,
-                        'total_price': item_price * item_quantity
+                        'total_price': item_price * item_quantity,
+                        'soh': soh
                     }
 
                     arrayOfItems.push(item);
@@ -693,8 +780,10 @@ $(document).on('click', '#customerTable td', function
                             '</td><td class="class_item_code">' + element.item_code +
                             '</td><td class="class_item_description">' +
                             element.item_description + '</td><td class="class_price">' +
-                            element.item_price + '</td><td class="class_quantity">' + element.item_quantity +
-                            '</td><td class="class_total_price text-danger"><b>' + element.total_price +
+                            element.item_price + '</td><td class="class_quantity">' + element
+                            .item_quantity +
+                            '</td><td class="class_total_price text-danger"><b>' + element
+                            .total_price +
                             '</b></td><td><a style="cursor: pointer" id="edit_item_modal_button" data-toggle="modal" data-target="#edit_item" ><span class="fas fa-edit text-info"></span></a>&nbsp;&nbsp;<a style="cursor: pointer" id=' +
                             index +
                             ' class="deleteRow" ><span class="fas fa-trash text-danger"></span></a></td></tr>'

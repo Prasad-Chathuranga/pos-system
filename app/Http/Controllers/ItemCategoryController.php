@@ -12,7 +12,7 @@ class ItemCategoryController extends Controller
     //
     public function index(){
 
-        // $this->authorize('view', ItemCategory::class);
+        $this->authorize('view', ItemCategory::class);
 
         $next_id = DB::table('item_categories')->max('id');
         if($next_id == NULL){
@@ -26,10 +26,13 @@ class ItemCategoryController extends Controller
 
         $this->authorize('create', ItemCategory::class);
         
+        
+
         $query = ItemCategory::create($request->validated());
 
         if($query){
             $next_id = DB::table('item_categories')->max('id');
+            alert()->success('','Category Created Successfully !')->persistent('OK');
             return redirect()->back()->with('next_id');
         }
 
@@ -38,27 +41,27 @@ class ItemCategoryController extends Controller
 
     public function edit($id){
 
-       
-
         $item_category = ItemCategory::find($id);
         return $item_category;
 
     }
 
-    public function update(Request $request){
-        // $this->authorize('update', ItemCategory::class);
-        dd($request);
-        // $item_category = ItemCategory::update('id',$request->edit_category_id)->update([
-        //     'category_description' => $request->edit_category_description,
-        //     'category_code' => $request->edit_category_code,
-        //     'category_status' => $request->edit_category_status
-        // ]);
+    public function update(ItemCategoryRequest $request){
+        $this->authorize('update', ItemCategory::class);
+        
+        $validated_data =  $request->validated();
 
+        $query = DB::table('item_categories')->where('id', $validated_data['category_id'])->update([
+            'category_status'=>$validated_data['category_status'],
+            'category_description'=>$validated_data['category_description']
+        ]);
 
-        // if($item_category != ""){
-        //     $next_id = DB::table('item_categories')->max('id');
-        //     return redirect()->back()->with('next_id');
-        // }
+        if($query){
+            $next_id = DB::table('item_categories')->max('id');
+            alert()->success('','Category Updated Successfully !')->persistent('OK');
+            return redirect()->back()->with('next_id');
+        }
+
     }
 
     public function delete($id){
@@ -68,6 +71,7 @@ class ItemCategoryController extends Controller
         $item_category = ItemCategory::where('id',$id)->delete();
         if($item_category != ""){
             $next_id = DB::table('item_categories')->max('id');
+            alert()->success('','Category Deleted Successfully !')->persistent('OK');
             return redirect()->back()->with('next_id');
             
 
