@@ -29,6 +29,8 @@
                                     <th>Reorder Level</th>
                                     <th></th>
                                     <th></th>
+
+                                    
                                    
                                 </tr>
                             </thead>
@@ -47,6 +49,7 @@
                                     <th>Reorder Level</th>
                                     <th></th>
                                     <th></th>
+                                   
                                  
                             </tr>
                             </tfoot>
@@ -196,12 +199,12 @@
                                 </div>
                             </div>
                         </div>
-                        @can('create', \App\Models\items::class)
+                        {{-- @can('create', \App\Models\items::class) --}}
                         <div class="form-group">
                             <button type="button" onclick="document.getElementById('item-form').submit();"
                                 class="btn btn-xs text-light" style="background-color: #1e2229">Save New Item</button>
                         </div>
-                        @endcan
+                        {{-- @endcan --}}
                     </form>
                 </div>
             </div>
@@ -222,7 +225,7 @@
                 <div class="modal-body">
                     @if (count($errors) > 0)
                         <script>
-                            // $('#edit_item').modal('show');
+                            $('#edit_item').modal('show');
                         </script>
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -374,7 +377,7 @@
 
             if (result != "") {
                 $.ajax({
-                    url: "{{ route('user.search') }}",
+                    url: "{{ route('admin.search') }}",
                     type: 'GET',
                     data: {
                         'result': result
@@ -431,7 +434,7 @@
                 $("#category_code").val(value);
 
                 $.ajax({
-                    url: "{{ route('user.category-details') }}",
+                    url: "{{ route('admin.category-details') }}",
                     type: 'GET',
                     data: {
                         'data': value
@@ -447,7 +450,46 @@
             });
 
 
-       
+        $(document).on('click', '.delete_item_button', function
+
+            () {
+
+                swal({
+                    title: "Are you sure?",
+                    text: "Once deleted, you will not be able to recover this!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        var id = $(this).attr('id');
+
+                        $.ajax({
+                            url: "delete-item/" + id,
+                            type: 'DELETE',
+                            data: {
+                                'data': id,
+                                "_token": "{{ csrf_token() }}"
+                            },
+                            success: function(data) {
+ 
+                                if(data.url){
+                                     window.location = data.url;
+                                }else if(data.message){
+                                    swal({
+                    title: "You cant perform this",
+                    text: "Once deleted, you will not be able to recover this!",
+                    icon: "warning"
+                })
+                                }
+
+                            }
+                        })
+                    }
+                })
+
+
+            });
 
         $(document).on('click', '#searchTableEdit td', function
 
@@ -514,8 +556,6 @@
 
         
         $(document).ready(function() {
-            var user = {{ Auth::user()->role }}
-            document.cookie='fcookie='+user;
             $("#country_list").hide();
             $('#example').DataTable({
                 'processing': true,
@@ -525,7 +565,7 @@
               
 
                 'ajax': {
-                    'url': 'ajax_items.php'
+                    'url': 'ajax_items.php',
                 },
                 'columns': [{
                         data: 'id'
@@ -554,14 +594,16 @@
                     {
                         data: 'edit'
                     },
-                  
                     {
                         data: 'delete'
                     }
-                    
+
                 ]
+
             });
-        });
+        }
+        
+        );
     </script>
 
 </main>

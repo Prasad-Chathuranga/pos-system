@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <meta name="author" content="Kodinger">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}" /> 
+
     <title>@yield('title')</title>
     {{-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -701,7 +703,10 @@
                                             <a href={{ route('user.product') }}>Product</a>
                                         </li>
                                         <li>
-                                            <a href="#">Forms</a>
+                                            <a href={{ route('user.re-order') }}>Re Order</a>
+                                        </li>
+                                        <li>
+                                            <a href={{ route('all-re-orders') }}>All Re Orders</a>
                                         </li>
                                     </ul>
                                 </div>

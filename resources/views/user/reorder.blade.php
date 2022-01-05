@@ -8,7 +8,7 @@
         <div style="width: 1000px;">
             <div class="card-header mt-5 text-center">
                 <strong>
-                    <h5>Item Category Management</h5>
+                    <h5>ReOrder Management</h5>
                 </strong>
             </div>
             <div class="card-body">
@@ -17,38 +17,33 @@
                     <div class="col-md-12">
                        
                         <button class="btn btn-xs text-light mb-3" style="background-color: #1e2229" data-toggle="modal"
-                            data-target=".bd-example-modal-lg" data-backdrop="static">Add New Category</button>
+                            data-target=".bd-example-modal-lg" data-backdrop="static">Add New Re-Order</button>
                         
                         <table id="example" class="display table" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Category Code</th>
+                                    <th>Item Code</th>
                                     <th>Description</th>
-                                    <th>Status</th>
-                                    {{-- @if (Auth::user()->can('update') || Auth::user()->can('delete')) --}}
-                                    <th>Action</th>
-                                    {{-- @endif --}}
+                                    <th>SOH</th>
+                                    <th>ReOrder Level</th>
+                                    <th>New SOH</th>
+                                  <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($categories as $key => $category)
+                                @foreach ($reorder_items as $key => $item)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
-                                        <td>{{ $category->category_code }}</td>
-                                        <td>{{ $category->category_description }}</td>
-                                        <td>{{ $category->category_status }}</td>
-                                        @if (Auth::user()->can('update', $category))
-                                        <td><a id=" {{ $category->id }} " style="cursor: pointer" class='mr-3 edit_category_button'><span data-toggle='modal'
-                                            data-target='#edit_category' class='fas fa-edit text-info'></span></a>
-                                        @endif
-                                           @if (Auth::user()->can('delete', $category))
-                                            <a id=" {{ $category->id }} " style="cursor: pointer" class="delete_category_button"><span class='fas fa-trash text-danger'></span></a></td>
-                                            <form id="delete-item-category" action="{{ route('category.delete', $category->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-                                        @endif
+                                        <td id="item_code">{{ $item->item_code }}</td>
+                                        <td id="description">{{ $item->description }}</td>
+                                        <td id="soh">{{ $item->soh }}</td>
+                                        <td id="reorder_level">{{ $item->reorder_level }}</td>
+                                     <td><input type="number" placeholder="New SOH" id="new_soh" class="form-control form-control-sm" /></td>
+                                        <td><a id=" {{ $item->id }} " style="cursor: pointer" class='mr-3 reorder'><span 
+                                             class='fa fa-archive text-info'></span></a>
+                                      
+                                         
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -94,8 +89,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Category ID</label>
-                                    <input class="form-control form-control-sm" name="category_id"
-                                        value="{{ $next_id }}" readonly type="text" placeholder="Category ID">
+                                    {{-- <input class="form-control form-control-sm" name="category_id"
+                                        value="{{ $next_id }}" readonly type="text" placeholder="Category ID"> --}}
                                 </div>
 
                             </div>
@@ -213,8 +208,62 @@
      </div>
  </div>
 
+<script>
 
-    <script>
+$(document).ready(function() {
+
+    
+            $('#example').DataTable();
+        });
+
+        $(document).on('click', '.reorder', function(){
+
+var id = $(this).attr('id');
+var new_soh = ($(this).closest('tr').find('input#new_soh').val());
+
+ var item_code = ($(this).closest('tr').find('td#item_code').text());
+ var description = ($(this).closest('tr').find('td#description').text());
+ var soh = ($(this).closest('tr').find('td#soh').text());
+ var reorder_level = ($(this).closest('tr').find('td#reorder_level').text());
+ 
+
+$.ajax({
+    url: "update-soh",
+    type: 'POST',
+    data: {
+        'item_id': id,
+        'item_code':item_code,
+        'description':description,
+        'soh':soh,
+        'reorder_level': reorder_level,
+        'new_soh' : new_soh, 
+        '_token': '{{csrf_token()}}'
+        },
+    success:function(data){
+        console.log(data);
+        if(data.url){
+                                     
+                       
+                window.location = data.url;
+                swal({
+                    title: "New SOH Updated with "+item_code,
+                    text: "Successfully Updated !",
+                    icon: "success"
+                })
+                                }
+                                // else{
+        //                             swal({
+        //             title: "You cant perform this",
+        //             text: "Once deleted, you will not be able to recover this!",
+        //             icon: "warning"
+        //         })
+        //                         }
+    }
+})
+})
+
+</script>
+    {{-- <script>
         $(document).ready(function() {
             $('#example').DataTable();
         });
@@ -235,7 +284,7 @@
             })
         })
 
-        $(document).on('click', '.delete_category_button', function(){
+        $(document).on('click', '.reorder', function(){
 
             swal({
                 title: "Are you sure?",
@@ -263,7 +312,7 @@
         })
 
 
-    </script>
+    </script> --}}
 </main>
 
 @endsection

@@ -1,7 +1,6 @@
 <?php
 ## Database configuration
 
-use Illuminate\Support\Facades\Auth;
 
 $sname= "localhost";
 $unmae= "root";
@@ -51,8 +50,18 @@ while ($row = mysqli_fetch_assoc($empRecords)) {
 
    
    // Delete Button
-   $deleteButton = "<a  id='".$row['id']."' class='delete_item_button' style='cursor: pointer'><span class='fas fa-trash text-danger'></span></a>";
-
+//    $deleteButton = "<a id='".$row['id']."' class='delete_item_button' style='cursor: pointer'><span class='fas fa-trash text-danger'></span></a>
+//    <form id='delete-item' action='{{route('item-delete','". $row['id'] . "') }}' method='POST'>
+  
+// </form>
+//    ";
+$deleteButton = "";
+$set = $_COOKIE["fcookie"];;
+if($set == 1){
+$deleteButton = "<a  id='".$row['id']."' class='delete_item_button' style='cursor: pointer'><span class='fas fa-trash text-danger'></span></a>";
+}else{
+   $deleteButton = "";
+}
    
 
    $action = $updateButton." ".$deleteButton;
@@ -83,4 +92,5 @@ $response = array(
 );
 
 echo json_encode($response);
+
 

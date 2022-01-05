@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\ItemCategory;
 use App\Models\User;
+use App\Models\items;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ItemCategoryPolicy
+class ItemPolicy
 {
     use HandlesAuthorization;
 
@@ -25,13 +25,12 @@ class ItemCategoryPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ItemCategory  $itemCategory
+     * @param  \App\Models\items  $items
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user)
+    public function view(User $user, items $items)
     {
         //
-        return $user->role == 2 || $user->role == 1; 
     }
 
     /**
@@ -43,21 +42,18 @@ class ItemCategoryPolicy
     public function create(User $user)
     {
         //
-        return $user->role == 2 || $user->role == 1; 
+        return $user->role == 2 || $user->role == 1 ;
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ItemCategory  $itemCategory
+     * @param  \App\Models\items  $items
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user)
+    public function update(User $user, items $items)
     {
-        //   dd($itemCategory);
-        return $user->role == 2 || $user->role == 1; 
-      
         //
     }
 
@@ -65,23 +61,23 @@ class ItemCategoryPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ItemCategory  $itemCategory
+     * @param  \App\Models\items  $items
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user)
     {
         //
-           return $user->role == 1; 
+        return $user->role == 1 ;
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ItemCategory  $itemCategory
+     * @param  \App\Models\items  $items
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, ItemCategory $itemCategory)
+    public function restore(User $user, items $items)
     {
         //
     }
@@ -90,10 +86,10 @@ class ItemCategoryPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\ItemCategory  $itemCategory
+     * @param  \App\Models\items  $items
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, ItemCategory $itemCategory)
+    public function forceDelete(User $user, items $items)
     {
         //
     }
