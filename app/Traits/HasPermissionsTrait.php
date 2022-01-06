@@ -45,7 +45,7 @@ foreach ($permission->roles as $role){
 return false;
 }
 
-public function hasRole(...$roles ) {
+public function hasRole(...$roles) {
 
 foreach ($roles as $role) {
   if ($this->roles->contains('slug', $role)) {

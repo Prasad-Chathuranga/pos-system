@@ -31,7 +31,7 @@ class ItemCategoryPolicy
     public function view(User $user)
     {
         //
-        return $user->role == 2 || $user->role == 1; 
+        return $user->hasRole('admin','user'); 
     }
 
     /**
@@ -43,7 +43,7 @@ class ItemCategoryPolicy
     public function create(User $user)
     {
         //
-        return $user->role == 2 || $user->role == 1; 
+        return $user->hasRole('admin','user'); 
     }
 
     /**
@@ -56,7 +56,7 @@ class ItemCategoryPolicy
     public function update(User $user)
     {
         //   dd($itemCategory);
-        return $user->role == 2 || $user->role == 1; 
+        return $user->hasRole('admin','user'); 
       
         //
     }
@@ -71,7 +71,7 @@ class ItemCategoryPolicy
     public function delete(User $user)
     {
         //
-           return $user->role == 1; 
+        return $user->hasRole('admin'); 
     }
 
     /**

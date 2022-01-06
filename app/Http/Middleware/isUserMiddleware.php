@@ -17,10 +17,11 @@ class isUserMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::check() && Auth::user()->role == 2){
+        // dd(Auth::user()->hasRole('user'));
+        if(Auth::user()->hasRole('user')){
             return $next($request);
         }else{
-            return redirect()->route('login');
+            return redirect()->route('admin.dashboard');
         }
     }
 }

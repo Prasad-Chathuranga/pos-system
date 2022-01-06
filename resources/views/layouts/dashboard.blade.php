@@ -12,6 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.1.0/css/buttons.dataTables.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -633,20 +634,14 @@
                         </div>
                         <div class="user-info">
                             <span class="user-name">Hi,
-                                <strong>{{ Auth::user()->name }}</strong>
+                                <strong>{{ Auth::user()->roles[0]['name'] }}</strong>
                             </span>
-                            @if(Auth::user()->role == 2)
-                            <span class="user-role">USER</span>
+                            @if(Auth::user()->roles)
+                            <span class="user-role">{{ Auth::user()->roles[0]['slug'] }}</span>
                             <span class="user-status">
                                 <i class="fa fa-circle"></i>
                                 <span>Online</span>
-                            </span>
-                            @else
-                            <span class="user-role">ADMIN</span>
-                            <span class="user-status">
-                                <i class="fa fa-circle"></i>
-                                <span>Online</span>
-                            </span>
+                            </span>   
                             @endif
                         </div>
                     </div>
@@ -664,22 +659,24 @@
                                     {{-- <span class="badge badge-pill badge-danger">3</span> --}}
                                 </a>
                                 <div class="sidebar-submenu">
-                                    <ul>
+                                    <ul> 
+                                        @if(Auth::user()->hasRole('admin'))
                                         <li>
-                                          @if(Auth::user()->role == 1)
-                                          <a href={{ route('admin.add-item') }}>Item
-                                          </a>
-                                          @else
-                                            <a href={{ route('user.add-item') }}>Item
-
-                                            </a>
-                                          @endif
+                                          <a href={{ route('admin.add-item') }}>Item</a>
                                         </li>
                                         <li>
+                                            <a href={{ route('admin.item-category') }}>Item Category
+                                            </a>
+                                        </li>
+                                        @else 
+                                        <li>
+                                            <a href={{ route('user.add-item') }}>Item</a>
+                                          </li>
+                                          <li>
                                             <a href={{ route('user.add-item-category') }}>Item Category
-
                                             </a>
                                         </li>
+                                        @endif
                                     </ul>
                                 </div>
                             </li>
