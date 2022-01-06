@@ -44,7 +44,7 @@
                                         @endif
                                            @can('delete', $category)
                                             <a id=" {{ $category->id }} " style="cursor: pointer" class="delete_category_button"><span class='fas fa-trash text-danger'></span></a></td>
-                                            <form id="delete-item-category" action="{{ route('category.delete', $category->id) }}" method="POST">
+                                            <form id="delete-item-category" action="{{ route('admin.category-delete', $category->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                             </form>

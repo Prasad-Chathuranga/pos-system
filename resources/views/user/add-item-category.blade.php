@@ -2,7 +2,21 @@
 
 @section('content')
 @section('title', 'Add Item Category')
+<style>
+    .error {
+            color: rgb(223, 71, 89);
+            /* background-color: rgb(141, 22, 22); */
+           
+            padding-top: 2px;
+            padding-bottom: 2px;
+            font-weight: bold;
+            border-radius: 3px;
+        }
+  
+
+</style>
 <main class="page-content">
+    
 
     <div class="container">
         <div style="width: 1000px;">
@@ -72,29 +86,13 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    {{-- @if (count($errors) > 0)
-                        <script>
-                            $('#category').modal('show');
-                        </script>
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <ul class="p-0 m-0" style="list-style: none;">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif --}}
-
                     <form method="POST" id="category-form" action="save-item-category">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Category ID</label>
-                                    <input class="form-control form-control-sm" name="category_id"
+                                    <input class="form-control form-control-sm mb-1" name="category_id"
                                         value="{{ $next_id }}" readonly type="text" placeholder="Category ID">
                                 </div>
 
@@ -113,6 +111,7 @@
                                     <label>Description <span class="text-danger">*</span></label>
                                     <textarea name="category_description" class="form-control form-control-sm"
                                         type="text" placeholder="Category Description"></textarea>
+                                      
                                 </div>
                                 <div class="form-group">
                                     <label>Status <span class="text-danger">*</span></label>
@@ -126,7 +125,7 @@
                         </div>
                         @can('create', \App\Models\ItemCategory::class)
                         <div class="form-group">
-                            <button type="button" onclick="document.getElementById('category-form').submit();"
+                            <button type="submit" 
                                 class="btn btn-xs text-light" style="background-color: #1e2229">Save Item
                                 Category</button>
                         </div>
@@ -153,16 +152,6 @@
                      <script>
                          $('#edit_category').modal('show');
                      </script>
-                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                             <span aria-hidden="true">&times;</span>
-                         </button>
-                         <ul class="p-0 m-0" style="list-style: none;">
-                             @foreach ($errors->all() as $error)
-                                 <li>{{ $error }}</li>
-                             @endforeach
-                         </ul>
-                     </div>
                  @endif --}}
                  <form method="POST" id="edit-category-form" action="update-item-category">
                      @csrf
@@ -192,7 +181,7 @@
                              </div>
                              <div class="form-group">
                                  <label>Status <span class="text-danger">*</span></label>
-                                 <select name="category_status" id="edit_category_status" class="form-control form-control-sm">
+                                 <select name="category_status" id="edit_category_status" class="form-control form-control-sm ">
                                     <option selected disabled>Select Category Status...</option>
                                      <option value="Active">Active</option>
                                      <option value="InActive">InActive</option>
@@ -202,7 +191,7 @@
                      </div>
                   
                      <div class="form-group">
-                         <button type="button" onclick="document.getElementById('edit-category-form').submit();"
+                         <button type="submit"
                              class="btn btn-xs text-light" style="background-color: #1e2229">Update Item
                              Category</button>
                      </div>
@@ -215,6 +204,84 @@
 
 
     <script>
+
+
+		$.validator.setDefaults( {
+			submitHandler: function (e) {
+			
+                if(e.id === "category-form"){
+                    $("#category-form")[0].submit();
+                }else if(e.id === "edit-category-form"){
+                    $("#edit-category-form")[0].submit();
+                }
+			}
+		} );
+
+		$( document ).ready( function () {
+			$( "#category-form" ).validate( {
+				rules: {
+					category_code: "required",
+					category_description: "required",
+                    category_status: "required"					
+				},
+				messages: {
+					category_code: "Category Code is Required !",
+					category_description: "Category Description is Required !",
+                    category_status: "Category Status is Required !",
+				},
+				// errorElement: "em",
+				errorPlacement: function ( error, element ) {
+					// Add the `help-block` class to the error element
+					error.addClass( "help-block" );
+
+					if ( element.prop( "type" ) === "checkbox" ) {
+						error.insertAfter( element.parent( "label" ) );
+					} else {
+						error.insertAfter( element );
+					}
+				},
+				highlight: function ( element, errorClass, validClass ) {
+					$( element ).parents( ".col-md-6" ).addClass( "has-error" ).removeClass( "has-success" );
+				},
+				unhighlight: function (element, errorClass, validClass) {
+					$( element ).parents( ".col-md-6" ).addClass( "has-success" ).removeClass( "has-error" );
+				}
+			} );
+        });
+
+        $( document ).ready( function () {
+			$( "#edit-category-form" ).validate( {
+				rules: {
+					category_code: "required",
+					category_description: "required",
+                    category_status: "required"					
+				},
+				messages: {
+					category_code: "Category Code is Required !",
+					category_description: "Category Description is Required !",
+                    category_status: "Category Status is Required !",
+				},
+				// errorElement: "em",
+				errorPlacement: function ( error, element ) {
+					// Add the `help-block` class to the error element
+					error.addClass( "help-block" );
+
+					if ( element.prop( "type" ) === "checkbox" ) {
+						error.insertAfter( element.parent( "label" ) );
+					} else {
+						error.insertAfter( element );
+					}
+				},
+				highlight: function ( element, errorClass, validClass ) {
+					$( element ).parents( ".col-md-6" ).addClass( "has-error" ).removeClass( "has-success" );
+				},
+				unhighlight: function (element, errorClass, validClass) {
+					$( element ).parents( ".col-md-6" ).addClass( "has-success" ).removeClass( "has-error" );
+				}
+			} );
+        });
+
+
         $(document).ready(function() {
             $('#example').DataTable();
         });

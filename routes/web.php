@@ -46,7 +46,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['middleware'=>['auth','preventBack']], function(){
 
-    Route::group(['prefix'=>'user', 'middleware'=> 'isUser'], function(){
+    
+
+    Route::group(['prefix'=>'user', 'middleware'=>['isUser']], function(){
         Route::get('dashboard', [UserController::class, 'index'])->name('user.dashboard');
         Route::get('product', [ProductController::class, 'index'])->name('user.product');
         Route::get('countries', [CountryController::class, 'index'])->name('user.countries');
@@ -58,11 +60,11 @@ Route::group(['middleware'=>['auth','preventBack']], function(){
         Route::get('search-customer-name', [InvoiceController::class, 'customerSearch'])->name('user.search-customer-name');
         Route::get('search-inv-item', [InvoiceController::class, 'search'])->name('invoice.search');
         Route::get('search-edit', [ItemController::class, 'searchEdit'])->name('user.search-edit');
-        Route::get('get-item-category/{id}', [ItemCategoryController::class, 'edit']);
+   
         Route::get('get-country/{id}', [CountryController::class, 'edit']);
         Route::get('get-item/{id}', [ItemController::class, 'edit']);
         Route::get('get-all-items', [ItemController::class, 'getAllItems'])->name('user.all-items');
-        Route::delete('delete-item-category/{id}', [ItemCategoryController::class, 'delete'])->name('category.delete');
+        Route::delete('delete-item-category/{id}', [ItemCategoryController::class, 'destroy'])->name('category.delete');
         Route::delete('delete-item/{id}', [ItemController::class, 'delete'])->name('item.delete');
         Route::delete('delete-customer/{id}', [CustomerController::class, 'destroy'])->name('customer.delete');
         Route::delete('delete-supplier/{id}', [SupplierController::class, 'destroy'])->name('supplier.delete');
@@ -96,12 +98,21 @@ Route::group(['middleware'=>['auth','preventBack']], function(){
 
     Route::group(['prefix'=>'admin', 'middleware'=>['isAdmin'], 'as'=>'admin.'], function(){
         Route::get('dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+
+        /** Item Routes **/
         Route::post('save-item', [\App\Http\Controllers\Admin\ItemController::class, 'store']);
         Route::get('add-item', [\App\Http\Controllers\Admin\ItemController::class, 'index'])->name('add-item');
-        Route::get('item-category', [\App\Http\Controllers\Admin\ItemCategoryController::class, 'index'])->name('item-category');
         Route::delete('delete-item/{id}', [\App\Http\Controllers\Admin\ItemController::class, 'destroy'])->name('item-delete');
+      
+        /** Item Category Routes **/
+        Route::get('item-category', [\App\Http\Controllers\Admin\ItemCategoryController::class, 'index'])->name('item-category');
+        Route::post('save-item-category', [\App\Http\Controllers\Admin\ItemCategoryController::class, 'store'])->name('save-item-category');;
+        Route::get('get-item-category/{id}', [\App\Http\Controllers\Admin\ItemCategoryController::class, 'edit']);
+        Route::delete('delete-category/{id}', [\App\Http\Controllers\Admin\ItemCategoryController::class, 'destroy'])->name('category-delete');
         Route::get('search', [\App\Http\Controllers\Admin\ItemController::class, 'search'])->name('search');
+        Route::post('update-item-category', [ItemCategoryController::class, 'update']);
         Route::get('get-category-details', [\App\Http\Controllers\Admin\ItemController::class, 'categoryDetials'])->name('category-details');
+        
     });
    
     
@@ -109,3 +120,4 @@ Route::group(['middleware'=>['auth','preventBack']], function(){
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+ ?>

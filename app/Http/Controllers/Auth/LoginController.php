@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use App\Traits\HasPermissionsTrait;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
@@ -51,7 +53,7 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        $user = User::where('email', $input['email'])->get();
+        // $user = User::where('email', $input['email'])->get();
         // dd($user->hasPermissionTo('create-tasks'));
 
         $user_email = DB::table("users")->where('email',$input['email'])->first();
@@ -59,9 +61,10 @@ class LoginController extends Controller
 
         if($user_email != NULL){
         if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password']))) {
-            if (auth()->user()) {
+        $user = Auth::user();
+            if ($user->hasRole('admin')) {
                 return redirect()->route('admin.dashboard');
-            } else if (auth()->user()) {
+            } else if ($user->hasRole('user')) {
                 return redirect()->route('user.dashboard');
             }
         } else {

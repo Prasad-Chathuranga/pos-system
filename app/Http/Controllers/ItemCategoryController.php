@@ -51,21 +51,34 @@ class ItemCategoryController extends Controller
         
         $validated_data =  $request->validated();
 
-        $query = DB::table('item_categories')->where('id', $validated_data['category_id'])->update([
-            'category_status'=>$validated_data['category_status'],
-            'category_description'=>$validated_data['category_description']
-        ]);
-
-        if($query){
+        $category = DB::table('item_categories')->where('id', $validated_data['category_id'])->get()->toArray();
+        // dd($category);
+        if($category[0]->category_status === $validated_data['category_status'] && $category[0]->category_description ===  $validated_data['category_description']){
             $next_id = DB::table('item_categories')->max('id');
-            alert()->success('','Category Updated Successfully !')->persistent('OK');
+            alert()->error('',"You didn't change any value !")->persistent('OK');
             return redirect()->back()->with('next_id');
         }
+        else
+        {
+            $query = DB::table('item_categories')->where('id', $validated_data['category_id'])->update([
+                'category_status'=>$validated_data['category_status'],
+                'category_description'=>$validated_data['category_description']
+            ]);
+    
+            if($query){
+                $next_id = DB::table('item_categories')->max('id');
+                alert()->success('','Category Updated Successfully !')->persistent('OK');
+                return redirect()->back()->with('next_id');
+            }
+        }
+
+      
 
     }
 
-    public function delete($id){
+    public function destroy($id){
 
+        
         $this->authorize('delete', ItemCategory::class);
 
         $item_category = ItemCategory::where('id',$id)->delete();
